@@ -1,0 +1,5 @@
+runtime: java11
+service: movieservice
+entrypoint: java -jar MovieService.jar
+manual_scaling:
+  instances: 1
