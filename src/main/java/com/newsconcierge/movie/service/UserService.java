@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.newsconcierge.movie.common.user.User;
@@ -18,11 +17,6 @@ public class UserService {
 	
 	private static Map<String, User> users= new HashMap<>();
 	
-	@Value("${newsconcierge.cookie.domain}")
-	private String cookieDomain;
-	
-	@Value("${newsconcierge.cookie.ttl:3600}")
-	private Integer cookieTimeToLive;
 	
 	public boolean exists(final User user) {
 		return users.containsKey(user.getEmail());

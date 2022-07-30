@@ -14,6 +14,6 @@ import lombok.extern.jackson.Jacksonized;
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class GenreResponse {
 	
-	List<Genre> genres;
+	private List<Genre> genres;
 	
 }

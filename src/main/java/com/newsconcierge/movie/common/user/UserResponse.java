@@ -10,6 +10,8 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Builder(toBuilder = true)
 public class UserResponse {
+	
 	private String emailaddress;
+	
 	private UUID uniqueKey;
 }

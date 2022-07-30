@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.newsconcierge.movie.common.NewsConciergeResponse;
+import com.newsconcierge.movie.common.Messages;
 import com.newsconcierge.movie.common.Movie;
 import com.newsconcierge.movie.common.MoviesResponse;
 import com.newsconcierge.movie.common.genre.Genre;
@@ -40,7 +41,7 @@ public class MovieController {
 		try {
 			var genres = genreService.getGenres();
 			log.trace("{}", genres);
-			var conciergeResponse = new NewsConciergeResponse<List<Genre>>(true, "success", genres.getGenres());
+			var conciergeResponse = new NewsConciergeResponse<List<Genre>>(true, Messages.SUCCESS, genres.getGenres());
 			return ResponseEntity.ok().cacheControl(CacheControl.maxAge(cacheMaxAge, TimeUnit.SECONDS)).body(conciergeResponse);
 		}
 		catch (Exception e) {
@@ -53,9 +54,9 @@ public class MovieController {
 	@GetMapping(path="movies/nowplaying")
 	public ResponseEntity<NewsConciergeResponse<MoviesResponse>> getNowPlaying(@RequestParam Optional<Integer> page){
 		try {
-			var movies = movieService.getNowPlaying(page);
+			var movies = movieService.getNowPlaying(page.isPresent()?page.get():1);
 			log.trace("{}", movies);
-			var conciergeResponse = new NewsConciergeResponse<MoviesResponse>(true, "success", movies);
+			var conciergeResponse = new NewsConciergeResponse<MoviesResponse>(true, Messages.SUCCESS, movies);
 			return ResponseEntity.ok().cacheControl(CacheControl.maxAge(cacheMaxAge, TimeUnit.SECONDS)).body(conciergeResponse);
 		}
 		catch (Exception e) {
@@ -69,11 +70,11 @@ public class MovieController {
 		try {
 			var movie = movieService.getLatest();
 			log.trace("{}", movie);
-			var conciergeResponse = new NewsConciergeResponse<Movie>(true, "success", movie);
+			var conciergeResponse = new NewsConciergeResponse<Movie>(true, Messages.SUCCESS, movie);
 			return ResponseEntity.ok().cacheControl(CacheControl.maxAge(cacheMaxAge, TimeUnit.SECONDS)).body(conciergeResponse);
 		}
 		catch (Exception e) {
-			log.error("Exception while returning Now Playing", e);
+			log.error("Exception while returning latest", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}

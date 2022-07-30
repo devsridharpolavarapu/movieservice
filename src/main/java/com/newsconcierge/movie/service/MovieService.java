@@ -3,6 +3,7 @@ package com.newsconcierge.movie.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,7 +16,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.newsconcierge.movie.common.Movie;
 import com.newsconcierge.movie.common.MoviesResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class MovieService {
 
 	@Value("${api.themoviedb.url}")
@@ -32,13 +36,14 @@ public class MovieService {
 	 * 
 	 * @return
 	 */
-	public MoviesResponse getNowPlaying(Optional<Integer> page) {
+	@Cacheable(value="nowplaying")
+	public MoviesResponse getNowPlaying(Integer page) {
 
 		UriComponentsBuilder builder = UriComponentsBuilder
 				.fromHttpUrl(baseUrl + "movie/now_playing")
 				.queryParam("api_key", apiKey)
 				.queryParam("language", language)
-				.queryParamIfPresent("page", page);
+				.queryParam("page", page);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -49,7 +54,9 @@ public class MovieService {
 				new HttpEntity<String>(headers),
 				MoviesResponse.class
 				);
-
+		
+		log.trace("NowPlaying results from tmdb endpoint");
+		
 		return response.getBody();
 	}
 	
@@ -58,6 +65,7 @@ public class MovieService {
 	 * 
 	 * @return
 	 */
+	@Cacheable(value="latest")
 	public Movie getLatest() {
 
 		UriComponentsBuilder builder = UriComponentsBuilder

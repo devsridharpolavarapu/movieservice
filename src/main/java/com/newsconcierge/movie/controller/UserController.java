@@ -1,16 +1,13 @@
 package com.newsconcierge.movie.controller;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.newsconcierge.movie.common.Messages;
 import com.newsconcierge.movie.common.NewsConciergeResponse;
 import com.newsconcierge.movie.common.user.User;
 import com.newsconcierge.movie.common.user.UserResponse;
@@ -30,17 +27,17 @@ public class UserController {
 		try {
 			if(!userService.exists(user)) {
 				var response = userService.register(user);
-				var conciergeResponse = new NewsConciergeResponse<UserResponse>(true, "success", response);
+				var conciergeResponse = new NewsConciergeResponse<UserResponse>(true, Messages.SUCCESS, response);
 				return ResponseEntity.ok().body(conciergeResponse);
 			}
 			else {
-				var conciergeResponse = new NewsConciergeResponse<UserResponse>(false, "User already exists", null);
+				var conciergeResponse = new NewsConciergeResponse<UserResponse>(false, Messages.USER_EXISTS, null);
 				return ResponseEntity.ok().body(conciergeResponse);
 			}
 
 		}
 		catch (Exception e) {
-			log.error("Exception while returning Now Playing", e);
+			log.error("Exception while registering a user", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
@@ -52,16 +49,16 @@ public class UserController {
 			var loginResponse = userService.login(user.getEmail(), user.getPassword());
 			if(loginResponse != null) {
 				return ResponseEntity.ok()
-						.body(new NewsConciergeResponse<UserResponse>(true, "success", loginResponse));
+						.body(new NewsConciergeResponse<UserResponse>(true, Messages.SUCCESS, loginResponse));
 			}
 			else {
-				var conciergeResponse = new NewsConciergeResponse<UserResponse>(false, "Username and Password combination is not valid!", null);
+				var conciergeResponse = new NewsConciergeResponse<UserResponse>(false, Messages.UNIDENTIFIED_USER, null);
 				return ResponseEntity.ok().body(conciergeResponse);
 			}
 
 		}
 		catch (Exception e) {
-			log.error("Exception while returning Now Playing", e);
+			log.error("Exception while attempting a login", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}

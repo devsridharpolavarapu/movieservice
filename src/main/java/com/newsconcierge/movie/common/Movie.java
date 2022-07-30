@@ -1,5 +1,6 @@
 package com.newsconcierge.movie.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,9 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Jacksonized
 @Builder(toBuilder = true)
-public class Movie {
+public class Movie implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("poster_path")
 	public String posterPath;
